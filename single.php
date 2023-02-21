@@ -16,8 +16,10 @@
                     <!-- Featured blog post-->
                     <div class="card mb-4">
                         <div class="card-body">
-                            <?php the_title(sprintf('<h2 class="card-title h4"><a href="%s">', esc_url(get_permalink())), '</a></h2>');?>
-                            <?php the_post_thumbnail('thumbnail');?>
+                            <?php the_title(sprintf('<h2 class="text-center card-title h4"><a class="text-decoration-none"href="%s">', esc_url(get_permalink())), '</a></h2>');?>
+                            <?php the_post_thumbnail('medium');?>
+                            <p class="text-decoration-none"><?php the_category();?></p>
+                            <?php the_tags();?>
                             <p class="card-text"><?php the_content();?></p>
                         </div>
                     </div>

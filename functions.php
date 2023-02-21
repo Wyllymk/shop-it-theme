@@ -12,26 +12,20 @@ if ( ! file_exists( get_template_directory() . '/inc/class-bootstrap-5-navwalker
 }
 
 /*-------------------------------------------------------------------------*/
-/*                        REGISTER ADD TO CART                             */
-/*-------------------------------------------------------------------------*/
-
-// if ( ! file_exists( get_template_directory() . '/inc/wp-shopping-cart.php' ) ) {
-//     // File does not exist... return an error.
-//     return new WP_Error( 'wp-shopping-cart-missing', __( 'It appears the wp-shopping-cart.php file may be missing.', 'wp-shopping-cart' ) );
-// } else {
-//     // File exists... require it.
-//     require_once get_template_directory() . '/inc/wp-shopping-cart.php';
-// }
-
-/*-------------------------------------------------------------------------*/
 /*                        ENQUEUE ALL THE THINGS                           */
 /*-------------------------------------------------------------------------*/
 
 function wp_custom_styles(){
-    wp_register_style('bootstrap5', get_template_directory_uri().'/assets/css/bootstrap.css', array(), '5.3.0', 'all');
-    wp_enqueue_style('bootstrap5');
-	wp_register_style('customcss', get_template_directory_uri().'/assets/css/custom.css', array(), '1.0.0', 'all');
-    wp_enqueue_style('customcss');
+    wp_register_style('bootstrap_5', get_template_directory_uri().'/assets/css/bootstrap.css', array(), '5.3.0', 'all');
+    wp_enqueue_style('bootstrap_5');
+    wp_register_style('playfair_cdn', 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0,400;1,700&display=swap', false, '1.0.0');
+    wp_enqueue_style('playfair_cdn');
+	wp_register_style('bootstrap_icons', get_template_directory_uri().'/assets/icons/bootstrap-icons.css', array(), '5.3.0', 'all');
+    wp_enqueue_style('bootstrap_icons');
+	wp_register_style('box_icons', get_template_directory_uri().'/assets/boxicons/css/boxicons.min.css', array(), '5.3.0', 'all');
+    wp_enqueue_style('box_icons');
+	wp_register_style('custom_css', get_template_directory_uri().'/assets/css/custom.css', array(), '1.0.0', 'all');
+    wp_enqueue_style('custom_css');
 }
 add_action('wp_enqueue_scripts', 'wp_custom_styles');
 
@@ -103,69 +97,111 @@ add_action( 'after_setup_theme', 'custom_theme_setup' );
 /*------------------------------------------------------------------------*/
 /*                        ADD WOOCOMMERCE SUPPORT                         */
 /*------------------------------------------------------------------------*/
-// WooCommerce
-require_once get_template_directory() . '/woocommerce/woocommerce-functions.php';
-// WooCommerce END
-// function mytheme_add_woocommerce_support() {
-// 	add_theme_support('wc-product-gallery-zoom');
-//   	add_theme_support('wc-product-gallery-lightbox');
-//   	add_theme_support('wc-product-gallery-slider');
-//     add_theme_support( 'woocommerce', array(
-// 		'thumbnail_image_width'  	=>  150,
-// 		'single_image_width'		=> 	200,
-// 		'product_grid'				=>	array(
-// 			'default_rows'    => 3,
-//             'min_rows'        => 2,
-//             'max_rows'        => 5,
-//             'default_columns' => 4,
-//             'min_columns'     => 2,
-//             'max_columns'     => 5,
-// 		)
-// 	));
-// }
+if(class_exists('WooCommerce')){
+function mytheme_add_woocommerce_support() {
+	add_theme_support('wc-product-gallery-zoom');
+  	add_theme_support('wc-product-gallery-lightbox');
+  	add_theme_support('wc-product-gallery-slider');
+    add_theme_support( 'woocommerce', array(
+		'thumbnail_image_width'  	=>  100,
+		'single_image_width'		=> 	100,
+		'gallery_thumbnail_image_width' => 100,
+		'product_grid'				=>	array(
+			'default_rows'    => 3,
+            'min_rows'        => 2,
+            'max_rows'        => 5,
+            'default_columns' => 4,
+            'min_columns'     => 2,
+            'max_columns'     => 5,
+		)
+	));
+}
 
-// add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
+add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
 
+//Remove WooCommerce Styles
+// add_filter('woocommerce_enqueue_styles', '__return_false');
 
-// remove_action('woocommerce_sidebar', 'woocommerce_get_sidebar');
-// //Add Container and row class
-// function open_container_row_div_classes(){
-// 	echo "<div class='container'><div class='row'>";
-// }
-// add_Action('woocommerce_before_main_content', 'open_container_row_div_classes', 5);
-
-// function close_container_row_div_classes(){
-// 	echo "</div></div>";
-// }
-// add_Action('woocommerce_after_main_content', 'close_container_row_div_classes', 5);
-
-// //Columns
-// //Sidebar
-
-// add_Action('woocommerce_before_main_content', 'open_sidebar_column', 6);
-
-// function open_sidebar_column(){
-// 	echo "<div class='col-4'>";
-// }
-
-// add_action('woocommerce_before_main_content', 'woocommerce_get_sidebar', 7);
-
-// add_Action('woocommerce_before_main_content', 'close_sidebar_column', 8);
-
-// function close_sidebar_column(){
-// 	echo "</div";
-// }
-
-// //Main
-// add_Action('woocommerce_before_main_content', 'open_product_column', 6);
-
-// function open_product_column(){
-// 	echo "<div class='col-8'>";
-// }
+//Remove Shop Title
+add_filter('woocommerce_show_page_title', '__return_false');
 
 
-// add_Action('woocommerce_before_main_content', 'close_product_column', 8);
+/**
+ * Show cart contents / total Ajax
+ */
+add_filter( 'woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
 
-// function close_product_column(){
-// 	echo "</div";
-// }
+function woocommerce_header_add_to_cart_fragment( $fragments ) {
+	global $woocommerce;
+
+	ob_start();
+
+	?>
+	<a class="cart-customlocation" href="<?php echo esc_url(wc_get_cart_url()); ?>" title="<?php _e('View your shopping cart', 'woothemes'); ?>"><?php echo sprintf(_n('%d item', '%d items', $woocommerce->cart->cart_contents_count, 'woothemes'), $woocommerce->cart->cart_contents_count);?> - <?php echo $woocommerce->cart->get_cart_total(); ?></a>
+	<?php
+	$fragments['a.cart-customlocation'] = ob_get_clean();
+	return $fragments;
+}
+}
+
+
+/*-------------------------------------------------------------------------*/
+/*                        FETCHING DATA FROM DB                            */
+/*-------------------------------------------------------------------------*/
+class ContactForm{
+	public $table;
+function __construct(){
+	global $wpdb;
+	$this->table = 'wp_contact';
+	if($this->table==true){
+	    //echo "Table Exists already";
+	}else{
+	    $this->create_table_contact();
+	}
+	$this->pass_data_to_contact();
+}
+
+function create_table_contact(){
+	global $wpdb;
+	$table = 'wp_contact';
+	$charset_collate = $wpdb->get_charset_collate();
+
+	$new_contact_details = "CREATE TABLE $table(
+		ID bigint unsigned NOT NULL auto_increment,
+		event_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		name text NOT NULL,
+		email varchar(35) NOT NULL,
+		subject varchar(35) NOT NULL,
+		message text NOT NULL,
+		PRIMARY KEY (ID)
+	) $charset_collate;";
+
+	require_once(ABSPATH.'wp-admin/includes/upgrade.php');
+	dbDelta($new_contact_details);
+}
+
+function pass_data_to_contact(){
+	if(isset($_POST['submitcontactform'])){
+		$data = array(
+			'name' => $_POST['name'],
+			'email'  =>  $_POST['email'],
+			'subject'  =>  $_POST['subject'],
+			'message'     =>  $_POST['message'],
+
+		);
+		global $wpdb;
+		$table = 'wp_contact';
+		$result = $wpdb->insert($table, $data, $format=NULL);
+		
+		if($result==true){
+			echo '<script>alert("Admin Form Submitted Successfully");</script>' ;
+		}else{
+			echo '<script>alert("Admin Form Not Submitted");</script>' ;
+		}
+	}
+}
+}
+
+if(class_exists('ContactForm')){
+    $contactFormInstance = new ContactForm();
+}

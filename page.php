@@ -17,13 +17,12 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <?php the_title(sprintf('<h2 class="card-title h4"><a href="%s">', esc_url(get_permalink())), '</a></h2>');?>
-                            <?php the_post_thumbnail('thumbnail');?>
                             <p class="card-text"><?php the_content();?></p>
                         </div>
                     </div>
                     <?php endwhile;
                             endif;
-                    ?>
+                            ?>
                 
             </div>
         </div>
