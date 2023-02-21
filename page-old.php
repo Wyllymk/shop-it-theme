@@ -6,48 +6,30 @@
             <div class="row">
                 <!-- Blog entries-->
                 <div class="col-lg-8">
-                    <div class="row mt-4">
-                        <?php
-                        if(have_posts()):
-                            $post_counter = 0;
-                            $posts_per_column = ceil($wp_query->post_count / 3);
-                            while(have_posts()):
-                                the_post();
-                                $url = wp_get_attachment_url(get_post_thumbnail_id($post->ID), 'thumbnail');
-                        ?>
-                        <!-- Blog post-->
-                        <div class="col-lg-4 mt-4">
-                            <div class="card mb-4 h-100 d-flex flex-column">
-                                <a href="#!"><img class="card-img-top flex-grow-1" src="<?php echo $url;?>" alt="" style="object-fit:cover; object-position:center;"/></a>
-                                <div class="card-body">
-                                    <div class="small text-muted"><?php the_time('F j, Y'); ?></div>
-                                    <?php the_title(sprintf('<h2 class="card-title h4"><a href="%s">', esc_url(get_permalink())), '</a></h2>');?>
-                                    <p class="card-text"><?php the_excerpt();?></p>
-                                    <div class="text-center">
-                                        <?php
-                                        /**
-                                         * Hook: woocommerce_after_shop_loop_item.
-                                         *
-                                         * @hooked woocommerce_template_loop_add_to_cart - 10
-                                         */
-                                        do_action( 'woocommerce_after_shop_loop_item' );
-                                        ?>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                            $post_counter++;
-                            if ($post_counter == $posts_per_column && $wp_query->post_count > $posts_per_column) {
-                                echo '</div><div class="row">';
-                            }
-                            endwhile;
-                        endif;
-                        ?>
-                    </div>
-                </div>
+                    <?php 
+                    if(is_home()){
+                        echo "<h1>This is hoooome!</h1>";
+                    }
+                    ?>
+                    <?php
+                            if(have_posts()):
+                                while(have_posts()): 
+                                    the_post();
+                                    $url = wp_get_attachment_url(get_post_thumbnail_id($post->ID), 'thumbnail');
 
+                            ?>
+                    <!-- Featured blog post-->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="small text-muted"><?php the_time('F j, Y'); ?></div>
+                            <?php the_title(sprintf('<h2 class="card-title h4"><a href="%s">', esc_url(get_permalink())), '</a></h2>');?>
+                            <p class="card-text"><?php the_excerpt();?></p>
+                        </div>
+                    </div>
+                    <?php endwhile;
+                            endif;
+                            ?>
+                </div>
                 <!-- Side widgets-->
                 <div class="col-lg-4">
                     <!-- Search widget-->

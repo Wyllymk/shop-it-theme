@@ -103,8 +103,69 @@ add_action( 'after_setup_theme', 'custom_theme_setup' );
 /*------------------------------------------------------------------------*/
 /*                        ADD WOOCOMMERCE SUPPORT                         */
 /*------------------------------------------------------------------------*/
-function mytheme_add_woocommerce_support() {
-    add_theme_support( 'woocommerce');
-}
+// WooCommerce
+require_once get_template_directory() . '/woocommerce/woocommerce-functions.php';
+// WooCommerce END
+// function mytheme_add_woocommerce_support() {
+// 	add_theme_support('wc-product-gallery-zoom');
+//   	add_theme_support('wc-product-gallery-lightbox');
+//   	add_theme_support('wc-product-gallery-slider');
+//     add_theme_support( 'woocommerce', array(
+// 		'thumbnail_image_width'  	=>  150,
+// 		'single_image_width'		=> 	200,
+// 		'product_grid'				=>	array(
+// 			'default_rows'    => 3,
+//             'min_rows'        => 2,
+//             'max_rows'        => 5,
+//             'default_columns' => 4,
+//             'min_columns'     => 2,
+//             'max_columns'     => 5,
+// 		)
+// 	));
+// }
 
-add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
+// add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
+
+
+// remove_action('woocommerce_sidebar', 'woocommerce_get_sidebar');
+// //Add Container and row class
+// function open_container_row_div_classes(){
+// 	echo "<div class='container'><div class='row'>";
+// }
+// add_Action('woocommerce_before_main_content', 'open_container_row_div_classes', 5);
+
+// function close_container_row_div_classes(){
+// 	echo "</div></div>";
+// }
+// add_Action('woocommerce_after_main_content', 'close_container_row_div_classes', 5);
+
+// //Columns
+// //Sidebar
+
+// add_Action('woocommerce_before_main_content', 'open_sidebar_column', 6);
+
+// function open_sidebar_column(){
+// 	echo "<div class='col-4'>";
+// }
+
+// add_action('woocommerce_before_main_content', 'woocommerce_get_sidebar', 7);
+
+// add_Action('woocommerce_before_main_content', 'close_sidebar_column', 8);
+
+// function close_sidebar_column(){
+// 	echo "</div";
+// }
+
+// //Main
+// add_Action('woocommerce_before_main_content', 'open_product_column', 6);
+
+// function open_product_column(){
+// 	echo "<div class='col-8'>";
+// }
+
+
+// add_Action('woocommerce_before_main_content', 'close_product_column', 8);
+
+// function close_product_column(){
+// 	echo "</div";
+// }
